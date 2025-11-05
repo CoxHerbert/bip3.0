@@ -1,5 +1,6 @@
 import mysql from 'mysql2/promise';
 import { ensureNoteTable } from '../models/noteSchema.js';
+import { ensureUserTable } from '../models/userSchema.js';
 
 let pool;
 
@@ -42,6 +43,7 @@ async function ensureSchema() {
   const connection = await pool.getConnection();
   try {
     await ensureNoteTable(connection);
+    await ensureUserTable(connection);
   } finally {
     connection.release();
   }
