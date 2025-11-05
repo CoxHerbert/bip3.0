@@ -6,6 +6,21 @@ import noteRoutes from './routes/noteRoutes.js';
 const app = express();
 
 app.use(express.json());
+
+const DISALLOWED_CONTENT_TYPES = ['multipart/form-data', 'application/octet-stream'];
+
+app.use((req, res, next) => {
+  if (['POST', 'PUT', 'PATCH'].includes(req.method)) {
+    const contentType = req.headers['content-type'];
+    if (
+      contentType &&
+      DISALLOWED_CONTENT_TYPES.some((type) => contentType.toLowerCase().includes(type))
+    ) {
+      return res.status(415).json({ message: 'File uploads are not supported.' });
+    }
+  }
+  next();
+});
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');

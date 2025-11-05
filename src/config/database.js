@@ -1,4 +1,6 @@
 import mysql from 'mysql2/promise';
+import { ensureNoteTable } from '../models/noteSchema.js';
+import { ensureUserTable } from '../models/userSchema.js';
 
 let pool;
 
@@ -38,19 +40,10 @@ export async function connectToDatabase() {
 }
 
 async function ensureSchema() {
-  const createTableSql = `
-    CREATE TABLE IF NOT EXISTS notes (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      title VARCHAR(120) NOT NULL,
-      content TEXT NOT NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-  `;
-
   const connection = await pool.getConnection();
   try {
-    await connection.query(createTableSql);
+    await ensureNoteTable(connection);
+    await ensureUserTable(connection);
   } finally {
     connection.release();
   }
