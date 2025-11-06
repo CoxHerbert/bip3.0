@@ -76,6 +76,7 @@ export default {
     '/',
     '/login',
     '/process-priview',
+    '/settings/debug',
     '/dashboard/projectSchedule',
     '/dashboard/commandRoom/index',
     '/dashboard/onSitePlan',

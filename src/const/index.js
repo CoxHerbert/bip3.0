@@ -4,6 +4,7 @@ import targetType from './modules/targetType';
 import roles from './modules/roles';
 import plan from './modules/plan';
 import templateFile from './modules/templateFile';
+import STORAGE_KEY from './key';
 
 export default {
   mps,
@@ -12,4 +13,7 @@ export default {
   roles: roles.roles,
   plan,
   templateFile,
+  key: STORAGE_KEY,
 };
+
+export { STORAGE_KEY };

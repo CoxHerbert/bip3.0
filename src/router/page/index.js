@@ -38,6 +38,16 @@ export default [
     },
   },
   {
+    path: '/settings/debug',
+    name: '调试设置',
+    component: () => import(/* webpackChunkName: "page" */ '@/page/settings/index.vue'),
+    meta: {
+      keepAlive: false,
+      isTab: false,
+      isAuth: false,
+    },
+  },
+  {
     path: '/jump/:id',
     name: '页面跳转...',
     component: () => import(/* webpackChunkName: "page" */ '@/page/jump/index.vue'),
