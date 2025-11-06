@@ -40,6 +40,7 @@ import DragScroll from './directive/drag-scroll.js';
 // graphql客户端
 import apolloClient from './api/graphql/index.js';
 // import { DefaultApolloClient } from '@apollo/client/core';
+import { initVConsole } from './plugins/vconsole';
 
 // 业务组件
 import tenantPackage from './views/system/tenantpackage.vue';
@@ -137,4 +138,5 @@ app.use(NfDesign, { locale: messages[language] }).use(NfForm).use(NfFormDesign).
 
 app.use(avueUeditor, { axios });
 app.use(NfDesignBase);
+initVConsole();
 app.mount('#app');
