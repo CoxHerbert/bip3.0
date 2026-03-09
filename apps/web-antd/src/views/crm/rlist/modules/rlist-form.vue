@@ -8,6 +8,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
+import { getSimpleBusinessList, type CrmBusinessApi } from '#/api/crm/business';
 import { createRList, getRList, updateRList } from '#/api/crm/rlist';
 import { $t } from '#/locales';
 
@@ -20,6 +21,7 @@ const emit = defineEmits<{
 }>();
 
 const formData = ref<CrmRListApi.RList>();
+const businessList = ref<CrmBusinessApi.Business[]>([]);
 
 const getTitle = computed(() => {
   return formData.value?.id
@@ -36,7 +38,24 @@ const [Form, formApi] = useVbenForm({
   },
   layout: 'horizontal',
   showDefaultActions: false,
+  handleValuesChange: async (values, changedFields) => {
+    if (!changedFields.includes('oppsId') || !values.oppsId) {
+      return;
+    }
+    const opps = businessList.value.find((item) => item.id === values.oppsId);
+    if (opps?.customerId) {
+      await formApi.setValues({ customerId: opps.customerId });
+    }
+  },
 });
+
+function mapFileUrlsToList(fileUrls?: string[]) {
+  return (fileUrls || []).map((url) => ({ rlistFileUrl: url }));
+}
+
+function mapFilesListToUrls(filesList?: CrmRListApi.RListFile[]) {
+  return (filesList || []).map((item) => item.rlistFileUrl).filter(Boolean);
+}
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
@@ -45,7 +64,13 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
-    const data = (await formApi.getValues()) as CrmRListApi.RList;
+    const values = (await formApi.getValues()) as CrmRListApi.RList & {
+      filesList?: string[];
+    };
+    const data: CrmRListApi.RList = {
+      ...values,
+      filesList: mapFileUrlsToList(values.filesList),
+    };
     try {
       await (formData.value?.id ? updateRList(data) : createRList(data));
       await modalApi.close();
@@ -60,6 +85,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
+    businessList.value = await getSimpleBusinessList();
     const data = modalApi.getData<CrmRListApi.RList>();
     if (!data || !data.id) {
       await formApi.resetForm();
@@ -68,7 +94,10 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       formData.value = await getRList(data.id);
-      await formApi.setValues(formData.value);
+      await formApi.setValues({
+        ...formData.value,
+        filesList: mapFilesListToUrls(formData.value.filesList),
+      });
     } finally {
       modalApi.unlock();
     }

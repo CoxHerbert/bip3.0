@@ -1,7 +1,9 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { getSimpleBusinessList } from '#/api/crm/business';
 import { getCustomerSimpleList } from '#/api/crm/customer';
+import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
 
 const DEVICE_CATEGORY_OPTIONS = [
@@ -38,11 +40,24 @@ export function useFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'rlistCode',
-      label: '客户需求编码',
+      label: '需求单编号',
       component: 'Input',
       componentProps: {
         placeholder: '可不填，后端自动生成',
       },
+    },
+    {
+      fieldName: 'oppsId',
+      label: '关联商机',
+      component: 'ApiSelect',
+      componentProps: {
+        api: getSimpleBusinessList,
+        labelField: 'name',
+        valueField: 'id',
+        placeholder: '请选择关联商机',
+        showSearch: true,
+      },
+      rules: 'required',
     },
     {
       fieldName: 'customerId',
@@ -52,7 +67,20 @@ export function useFormSchema(): VbenFormSchema[] {
         api: getCustomerSimpleList,
         labelField: 'name',
         valueField: 'id',
-        placeholder: '请选择关联客户',
+        placeholder: '关联商机自动带出，可手动调整',
+        showSearch: true,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'bdId',
+      label: 'BD',
+      component: 'ApiSelect',
+      componentProps: {
+        api: getSimpleUserList,
+        labelField: 'nickname',
+        valueField: 'id',
+        placeholder: '请选择 BD',
         showSearch: true,
       },
       rules: 'required',
@@ -76,6 +104,14 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请选择设备种类',
       },
       rules: 'required',
+    },
+    {
+      fieldName: 'filesList',
+      label: '相关附件',
+      component: 'FileUpload',
+      componentProps: {
+        maxNumber: 9,
+      },
     },
     {
       fieldName: 'remark',
@@ -141,18 +177,13 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     { type: 'seq', width: 60, title: '序号' },
     { field: 'rlistName', title: '需求名称', minWidth: 180 },
-    { field: 'rlistCode', title: '客户需求编码', minWidth: 150 },
+    { field: 'rlistCode', title: '需求单编号', minWidth: 150 },
     { field: 'customerName', title: '关联客户', minWidth: 180 },
-    { field: 'deviceKey', title: '设备类型', minWidth: 120 },
-    { field: 'deviceTypeKey', title: '设备种类', minWidth: 120 },
+    { field: 'oppsName', title: '关联商机', minWidth: 180 },
     { field: 'creator', title: '创建人', minWidth: 120 },
-    {
-      field: 'createTime',
-      title: '创建时间',
-      minWidth: 180,
-      formatter: 'formatDateTime',
-    },
-    { field: 'remark', title: '备注', minWidth: 220, showOverflow: 'tooltip' },
+    { field: 'bdName', title: 'BD', minWidth: 120 },
+    { field: 'deviceTypeKey', title: '设备种类', minWidth: 120 },
+    { field: 'deviceKey', title: '设备类型', minWidth: 120 },
     {
       title: '操作',
       width: 150,

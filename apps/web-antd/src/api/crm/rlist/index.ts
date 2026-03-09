@@ -3,6 +3,10 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace CrmRListApi {
+  export interface RListFile {
+    rlistFileUrl: string;
+  }
+
   /** 客户需求单 */
   export interface RList {
     id?: number;
@@ -16,8 +20,13 @@ export namespace CrmRListApi {
     rlistCode?: string;
     customerId?: number;
     customerName?: string;
+    oppsId?: number;
+    oppsName?: string;
+    bdId?: number;
+    bdName?: string;
     deviceKey?: string;
     deviceTypeKey?: string;
+    filesList?: RListFile[];
     remark?: string;
   }
 }
