@@ -4,7 +4,7 @@ import type { UploadRequestOption } from 'ant-design-vue/lib/vc-upload/interface
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { Page } from '@vben/common-ui';
+import { Page, useVbenModal } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
 
 import {
@@ -18,9 +18,18 @@ import {
   Upload,
 } from 'ant-design-vue';
 
+import { ACTION_ICON, TableAction } from '#/adapter/vxe-table';
 import { deleteRListFile, deleteRListFileList } from '#/api/crm/rlist-file';
-import { getRList, updateRList, type CrmRListApi } from '#/api/crm/rlist';
+import {
+  deleteRList,
+  getRList,
+  updateRList,
+  type CrmRListApi,
+} from '#/api/crm/rlist';
 import { uploadFile } from '#/api/infra/file';
+import { $t } from '#/locales';
+
+import RListForm from '../modules/rlist-form.vue';
 
 defineOptions({ name: 'CrmRListDetail' });
 
@@ -34,6 +43,11 @@ const rlistId = ref<number>(0);
 const detail = ref<CrmRListApi.RList>({} as CrmRListApi.RList);
 const fileList = ref<CrmRListApi.RListFile[]>([]);
 const selectedRowKeys = ref<number[]>([]);
+
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: RListForm,
+  destroyOnClose: true,
+});
 
 function handleSelectChange(keys: (number | string)[]) {
   selectedRowKeys.value = keys.map((item) => Number(item));
@@ -70,6 +84,20 @@ async function loadDetail() {
 
 function handleBack() {
   push({ name: 'CrmRList' });
+}
+
+function handleCreate() {
+  formModalApi.setData({}).open();
+}
+
+function handleEdit() {
+  formModalApi.setData({ id: rlistId.value }).open();
+}
+
+async function handleDelete() {
+  await deleteRList(rlistId.value);
+  message.success('删除成功');
+  handleBack();
 }
 
 function fileNameByUrl(url: string) {
@@ -129,18 +157,52 @@ onMounted(() => {
 </script>
 
 <template>
-  <Page auto-content-height :loading="loading">
+  <Page
+    auto-content-height
+    :loading="loading"
+    :title="detail.rlistName || '需求单详情'"
+  >
+    <FormModal @success="loadDetail" />
+    <template #extra>
+      <TableAction
+        :actions="[
+          {
+            label: '返回',
+            type: 'default',
+            icon: 'lucide:arrow-left',
+            onClick: handleBack,
+          },
+          {
+            label: '创建客户需求表',
+            type: 'primary',
+            icon: ACTION_ICON.ADD,
+            onClick: handleCreate,
+          },
+          {
+            label: $t('ui.actionTitle.edit'),
+            type: 'primary',
+            icon: ACTION_ICON.EDIT,
+            onClick: handleEdit,
+          },
+          {
+            label: $t('common.delete'),
+            type: 'default',
+            danger: true,
+            icon: ACTION_ICON.DELETE,
+            popConfirm: {
+              title: `确认删除需求单【${detail.rlistName || ''}】吗？`,
+              confirm: handleDelete,
+            },
+          },
+        ]"
+      />
+    </template>
+
     <Card>
-      <div class="text-3xl font-bold">
-        {{ detail.rlistName || '需求单详情' }}
-      </div>
-      <div class="mt-4 flex flex-wrap gap-x-8 gap-y-2 text-sm text-gray-600">
+      <div class="mt-2 flex flex-wrap gap-x-8 gap-y-2 text-sm text-gray-600">
         <div v-for="item in headerItems" :key="item.label">
           <span class="text-gray-500">{{ item.label }}：</span>{{ item.value }}
         </div>
-      </div>
-      <div class="mt-4">
-        <Button @click="handleBack">返回</Button>
       </div>
     </Card>
 
