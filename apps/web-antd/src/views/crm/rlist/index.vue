@@ -2,6 +2,8 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { CrmRListApi } from '#/api/crm/rlist';
 
+import { useRouter } from 'vue-router';
+
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
@@ -14,6 +16,8 @@ import { useGridColumns, useGridFormSchema } from './data';
 import RListForm from './modules/rlist-form.vue';
 
 defineOptions({ name: 'CrmRList' });
+
+const { push } = useRouter();
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: RListForm,
@@ -30,6 +34,10 @@ function handleCreate() {
 
 function handleEdit(row: CrmRListApi.RList) {
   formModalApi.setData({ id: row.id }).open();
+}
+
+function handleDetail(row: CrmRListApi.RList) {
+  push({ name: 'CrmRListDetail', params: { id: row.id } });
 }
 
 async function handleDelete(row: CrmRListApi.RList) {
@@ -92,6 +100,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
           ]"
         />
+      </template>
+
+      <template #rlistName="{ row }">
+        <a class="text-primary hover:underline" @click="handleDetail(row)">
+          {{ row.rlistName }}
+        </a>
       </template>
 
       <template #actions="{ row }">

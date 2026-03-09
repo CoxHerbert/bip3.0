@@ -74,6 +74,17 @@ const routes: RouteRecordRaw[] = [
         },
         component: () => import('#/views/crm/contact/detail/index.vue'),
       },
+
+      {
+        path: 'rlist/detail/:id',
+        name: 'CrmRListDetail',
+        meta: {
+          title: '需求单详情',
+          activePath: '/crm/rlist',
+        },
+        component: () => import('#/views/crm/rlist/detail/index.vue'),
+      },
+
       {
         path: 'product/detail/:id',
         name: 'CrmProductDetail',

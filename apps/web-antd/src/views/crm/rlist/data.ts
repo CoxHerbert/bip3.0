@@ -176,7 +176,12 @@ export function useGridFormSchema(): VbenFormSchema[] {
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     { type: 'seq', width: 60, title: '序号' },
-    { field: 'rlistName', title: '需求名称', minWidth: 180 },
+    {
+      field: 'rlistName',
+      title: '需求名称',
+      minWidth: 180,
+      slots: { default: 'rlistName' },
+    },
     { field: 'rlistCode', title: '需求单编号', minWidth: 150 },
     { field: 'customerName', title: '关联客户', minWidth: 180 },
     { field: 'oppsName', title: '关联商机', minWidth: 180 },
