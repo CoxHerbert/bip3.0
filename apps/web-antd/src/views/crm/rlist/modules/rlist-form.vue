@@ -31,12 +31,14 @@ const getTitle = computed(() => {
 
 const [Form, formApi] = useVbenForm({
   schema: useFormSchema(),
+  layout: 'horizontal',
+  wrapperClass: 'grid-cols-2',
   commonConfig: {
     componentProps: {
       class: 'w-full',
     },
+    labelWidth: 120,
   },
-  layout: 'horizontal',
   showDefaultActions: false,
   handleValuesChange: async (values, changedFields) => {
     if (!changedFields.includes('oppsId') || !values.oppsId) {

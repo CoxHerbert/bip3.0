@@ -112,6 +112,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         maxNumber: 9,
       },
+      formItemClass: 'col-span-2',
     },
     {
       fieldName: 'remark',
@@ -121,6 +122,7 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入备注',
         rows: 3,
       },
+      formItemClass: 'col-span-2',
     },
   ];
 }
