@@ -24,27 +24,44 @@ export namespace CrmRListApi {
 
 /** 查询客户需求单分页 */
 export function getRListPage(params: PageParam) {
-  return requestClient.get<PageResult<CrmRListApi.RList>>('/crm/rlist/page', {
-    params,
-  });
+  return requestClient.get<PageResult<CrmRListApi.RList>>(
+    '/crm/customer-rlist/page',
+    {
+      params,
+    },
+  );
 }
 
 /** 查询客户需求单详情 */
 export function getRList(id: number) {
-  return requestClient.get<CrmRListApi.RList>(`/crm/rlist/get?id=${id}`);
+  return requestClient.get<CrmRListApi.RList>('/crm/customer-rlist/get', {
+    params: { id },
+  });
 }
 
 /** 新增客户需求单 */
 export function createRList(data: CrmRListApi.RList) {
-  return requestClient.post('/crm/rlist/create', data);
+  return requestClient.post('/crm/customer-rlist/create', data);
 }
 
 /** 修改客户需求单 */
 export function updateRList(data: CrmRListApi.RList) {
-  return requestClient.put('/crm/rlist/update', data);
+  return requestClient.put('/crm/customer-rlist/update', data);
 }
 
 /** 删除客户需求单 */
 export function deleteRList(id: number) {
-  return requestClient.delete(`/crm/rlist/delete?id=${id}`);
+  return requestClient.delete('/crm/customer-rlist/delete', { params: { id } });
+}
+
+/** 批量删除客户需求单 */
+export function deleteRListList(ids: number[]) {
+  return requestClient.delete('/crm/customer-rlist/delete-list', {
+    params: { ids: ids.join(',') },
+  });
+}
+
+/** 导出客户需求单 */
+export function exportRList(params: any) {
+  return requestClient.download('/crm/customer-rlist/export-excel', { params });
 }
