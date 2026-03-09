@@ -4,7 +4,10 @@ import { requestClient } from '#/api/request';
 
 export namespace CrmRListApi {
   export interface RListFile {
+    id?: number;
+    rlistId?: number;
     rlistFileUrl: string;
+    createTime?: Date;
   }
 
   /** 客户需求单 */

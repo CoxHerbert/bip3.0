@@ -9,16 +9,6 @@ export namespace CrmRListFileApi {
   }
 }
 
-/** 查询需求单附件 */
-export function getRListFileList(rlistId: number) {
-  return requestClient.get<CrmRListFileApi.RListFile[]>(
-    '/crm/customer-rlist-files/get',
-    {
-      params: { id: rlistId },
-    },
-  );
-}
-
 /** 删除需求单附件 */
 export function deleteRListFile(id: number) {
   return requestClient.delete('/crm/customer-rlist-files/delete', {

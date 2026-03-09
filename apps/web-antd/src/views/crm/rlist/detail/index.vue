@@ -18,14 +18,9 @@ import {
   Upload,
 } from 'ant-design-vue';
 
-import { uploadFile } from '#/api/infra/file';
+import { deleteRListFile, deleteRListFileList } from '#/api/crm/rlist-file';
 import { getRList, updateRList, type CrmRListApi } from '#/api/crm/rlist';
-import {
-  deleteRListFile,
-  deleteRListFileList,
-  getRListFileList,
-  type CrmRListFileApi,
-} from '#/api/crm/rlist-file';
+import { uploadFile } from '#/api/infra/file';
 
 defineOptions({ name: 'CrmRListDetail' });
 
@@ -37,7 +32,7 @@ const { push } = useRouter();
 const loading = ref(false);
 const rlistId = ref<number>(0);
 const detail = ref<CrmRListApi.RList>({} as CrmRListApi.RList);
-const fileList = ref<CrmRListFileApi.RListFile[]>([]);
+const fileList = ref<CrmRListApi.RListFile[]>([]);
 const selectedRowKeys = ref<number[]>([]);
 
 function handleSelectChange(keys: (number | string)[]) {
@@ -46,11 +41,7 @@ function handleSelectChange(keys: (number | string)[]) {
 
 const columns = [
   { title: '文件链接', dataIndex: 'rlistFileUrl', key: 'rlistFileUrl' },
-  {
-    title: '操作',
-    key: 'action',
-    width: 180,
-  },
+  { title: '操作', key: 'action', width: 180 },
 ];
 
 const headerItems = computed(() => [
@@ -70,16 +61,11 @@ async function loadDetail() {
   loading.value = true;
   try {
     detail.value = await getRList(rlistId.value);
-    await loadFiles();
+    fileList.value = detail.value.filesList || [];
+    selectedRowKeys.value = [];
   } finally {
     loading.value = false;
   }
-}
-
-async function loadFiles() {
-  const res = await getRListFileList(rlistId.value);
-  fileList.value = Array.isArray(res) ? res : [];
-  selectedRowKeys.value = [];
 }
 
 function handleBack() {
@@ -94,13 +80,13 @@ function handleDownload(url: string) {
   window.open(url, '_blank');
 }
 
-async function handleDeleteFile(record: CrmRListFileApi.RListFile) {
+async function handleDeleteFile(record: CrmRListApi.RListFile) {
   if (!record.id) {
     return;
   }
   await deleteRListFile(record.id);
   message.success('删除成功');
-  await loadFiles();
+  await loadDetail();
 }
 
 async function handleDeleteSelected() {
@@ -110,7 +96,7 @@ async function handleDeleteSelected() {
   }
   await deleteRListFileList(selectedRowKeys.value);
   message.success('批量删除成功');
-  await loadFiles();
+  await loadDetail();
 }
 
 async function handleUpload({ file, onSuccess, onError }: UploadRequestOption) {
@@ -189,10 +175,7 @@ onMounted(() => {
             :columns="columns"
             :data-source="fileList"
             :pagination="false"
-            :row-selection="{
-              selectedRowKeys,
-              onChange: handleSelectChange,
-            }"
+            :row-selection="{ selectedRowKeys, onChange: handleSelectChange }"
             row-key="id"
           >
             <template #bodyCell="{ column, record }">
