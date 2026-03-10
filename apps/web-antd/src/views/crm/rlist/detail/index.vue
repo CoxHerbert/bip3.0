@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { UploadRequestOption } from 'ant-design-vue/lib/vc-upload/interface';
-
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -15,7 +13,6 @@ import {
   Space,
   Table,
   Tabs,
-  Upload,
 } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction } from '#/adapter/vxe-table';
@@ -26,8 +23,8 @@ import {
   updateRList,
   type CrmRListApi,
 } from '#/api/crm/rlist';
-import { uploadFile } from '#/api/infra/file';
 import { DictTag } from '#/components/dict-tag';
+import FileUpload from '#/components/upload/file-upload.vue';
 import { $t } from '#/locales';
 
 import { DICT_TYPE } from '@vben/constants';
@@ -46,6 +43,7 @@ const rlistId = ref<number>(0);
 const detail = ref<CrmRListApi.RList>({} as CrmRListApi.RList);
 const fileList = ref<CrmRListApi.RListFile[]>([]);
 const selectedRowKeys = ref<number[]>([]);
+const uploadValues = ref<string[]>([]);
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: RListForm,
@@ -130,27 +128,33 @@ async function handleDeleteSelected() {
   await loadDetail();
 }
 
-async function handleUpload({ file, onSuccess, onError }: UploadRequestOption) {
-  try {
-    const res = await uploadFile({
-      file: file as File,
-      directory: 'crm/rlist',
-    });
-    const nextFiles = [
-      ...(detail.value.filesList || []),
-      { rlistFileUrl: res },
-    ];
-    await updateRList({
-      ...detail.value,
-      id: rlistId.value,
-      filesList: nextFiles,
-    });
-    onSuccess?.(res);
-    message.success('上传成功');
-    await loadDetail();
-  } catch (error) {
-    onError?.(error as Error);
+async function handleUploadChange(value: string | string[]) {
+  const urls = Array.isArray(value) ? value : value ? [value] : [];
+  if (!urls.length) {
+    return;
   }
+
+  const exists = new Set(
+    (detail.value.filesList || []).map((item) => item.rlistFileUrl),
+  );
+  const newUrls = urls.filter((url) => !exists.has(url));
+  if (!newUrls.length) {
+    uploadValues.value = [];
+    return;
+  }
+
+  const nextFiles = [
+    ...(detail.value.filesList || []),
+    ...newUrls.map((url) => ({ rlistFileUrl: url })),
+  ];
+  await updateRList({
+    ...detail.value,
+    id: rlistId.value,
+    filesList: nextFiles,
+  });
+  message.success('上传成功');
+  uploadValues.value = [];
+  await loadDetail();
 }
 
 onMounted(() => {
@@ -242,9 +246,12 @@ onMounted(() => {
 
         <Tabs.TabPane tab="附件" key="file" force-render>
           <Space class="mb-4">
-            <Upload :custom-request="handleUpload" :show-upload-list="false">
-              <Button type="primary">上传</Button>
-            </Upload>
+            <FileUpload
+              v-model="uploadValues"
+              :max-number="1"
+              class="w-72"
+              @change="handleUploadChange"
+            />
             <Popconfirm
               title="确认删除选中附件吗？"
               @confirm="handleDeleteSelected"
