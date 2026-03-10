@@ -27,7 +27,10 @@ import {
   type CrmRListApi,
 } from '#/api/crm/rlist';
 import { uploadFile } from '#/api/infra/file';
+import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
+
+import { DICT_TYPE } from '@vben/constants';
 
 import RListForm from '../modules/rlist-form.vue';
 
@@ -215,8 +218,24 @@ onMounted(() => {
             <div>关联客户：{{ detail.customerName || '--' }}</div>
             <div>关联商机：{{ detail.oppsName || '--' }}</div>
             <div>BD：{{ detail.bdName || '--' }}</div>
-            <div>设备种类：{{ detail.deviceTypeKey || '--' }}</div>
-            <div>设备类型：{{ detail.deviceKey || '--' }}</div>
+            <div>
+              设备种类：
+              <DictTag
+                v-if="detail.deviceTypeKey"
+                :type="DICT_TYPE.CRM_RLIST_DEVICE_TYPE"
+                :value="detail.deviceTypeKey"
+              />
+              <span v-else>--</span>
+            </div>
+            <div>
+              设备类型：
+              <DictTag
+                v-if="detail.deviceKey"
+                :type="DICT_TYPE.CRM_RLIST_DEVICE"
+                :value="detail.deviceKey"
+              />
+              <span v-else>--</span>
+            </div>
             <div class="col-span-2">描述：{{ detail.remark || '--' }}</div>
           </div>
         </Tabs.TabPane>
