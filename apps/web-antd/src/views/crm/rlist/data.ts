@@ -1,22 +1,13 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
 import { getSimpleBusinessList } from '#/api/crm/business';
 import { getCustomerSimpleList } from '#/api/crm/customer';
 import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
-
-const DEVICE_CATEGORY_OPTIONS = [
-  { label: '改机', value: 'REFIT' },
-  { label: '备件', value: 'SPARE_PART' },
-  { label: '整机', value: 'WHOLE_MACHINE' },
-];
-
-const DEVICE_TYPE_OPTIONS = [
-  { label: '单机', value: 'SINGLE' },
-  { label: '联机', value: 'LINKED' },
-  { label: '产线', value: 'LINE' },
-];
 
 /** 新增/修改需求单表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -90,7 +81,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '设备类型',
       component: 'Select',
       componentProps: {
-        options: DEVICE_CATEGORY_OPTIONS,
+        options: getDictOptions(DICT_TYPE.CRM_RLIST_DEVICE),
         placeholder: '请选择设备类型',
       },
       rules: 'required',
@@ -100,7 +91,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '设备种类',
       component: 'Select',
       componentProps: {
-        options: DEVICE_TYPE_OPTIONS,
+        options: getDictOptions(DICT_TYPE.CRM_RLIST_DEVICE_TYPE),
         placeholder: '请选择设备种类',
       },
       rules: 'required',
@@ -157,7 +148,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '设备种类',
       component: 'Select',
       componentProps: {
-        options: DEVICE_TYPE_OPTIONS,
+        options: getDictOptions(DICT_TYPE.CRM_RLIST_DEVICE_TYPE),
         placeholder: '请选择设备种类',
         allowClear: true,
       },
@@ -189,8 +180,24 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     { field: 'oppsName', title: '关联商机', minWidth: 180 },
     { field: 'creator', title: '创建人', minWidth: 120 },
     { field: 'bdName', title: 'BD', minWidth: 120 },
-    { field: 'deviceTypeKey', title: '设备种类', minWidth: 120 },
-    { field: 'deviceKey', title: '设备类型', minWidth: 120 },
+    {
+      field: 'deviceTypeKey',
+      title: '设备种类',
+      minWidth: 120,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.CRM_RLIST_DEVICE_TYPE },
+      },
+    },
+    {
+      field: 'deviceKey',
+      title: '设备类型',
+      minWidth: 120,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.CRM_RLIST_DEVICE },
+      },
+    },
     {
       title: '操作',
       width: 150,

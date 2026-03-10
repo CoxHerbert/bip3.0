@@ -123,6 +123,8 @@ const CRM_DICT = {
   CRM_PRODUCT_STATUS: 'crm_product_status', // CRM 商品状态
   CRM_PRODUCT_UNIT: 'crm_product_unit', // CRM 产品单位
   CRM_RECEIVABLE_RETURN_TYPE: 'crm_receivable_return_type', // CRM 回款的还款方式
+  CRM_RLIST_DEVICE: 'crm_rlist_device', // CRM 需求单设备类型
+  CRM_RLIST_DEVICE_TYPE: 'crm_rlist_device_type', // CRM 需求单设备种类
 } as const;
 
 /** ========== ERP - 企业资源计划模块 ========== */
