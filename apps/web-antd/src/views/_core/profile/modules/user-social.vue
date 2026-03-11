@@ -124,6 +124,8 @@ async function onBind(bind: any) {
   try {
     // 计算 redirectUri
     // tricky: type 需要先 encode 一次，否则钉钉回调会丢失。配合 getUrlValue() 使用
+    // const baseUrl =
+    //   import.meta.env.development.VITE_BASE_NATAPP || location.origin;
     const redirectUri = `${location.origin}/profile?${encodeURIComponent(`type=${type}`)}`;
 
     // 进行跳转

@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import {
-  SvgDingDingIcon,
-  SvgGithubIcon,
-  SvgQQChatIcon,
-  SvgWeChatIcon,
-} from '@vben/icons';
+import { SvgWexChatIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import { VbenIconButton } from '@vben-core/shadcn-ui';
@@ -38,10 +33,13 @@ function handleThirdLogin(type: number) {
     </div>
 
     <div class="mt-4 flex flex-wrap justify-center">
-      <VbenIconButton class="mb-3" @click="handleThirdLogin(30)">
+      <!-- <VbenIconButton class="mb-3" @click="handleThirdLogin(25)">
         <SvgWeChatIcon />
+      </VbenIconButton> -->
+      <VbenIconButton class="mb-3" @click="handleThirdLogin(30)">
+        <SvgWexChatIcon />
       </VbenIconButton>
-      <VbenIconButton class="mb-3" @click="handleThirdLogin(20)">
+      <!-- <VbenIconButton class="mb-3" @click="handleThirdLogin(20)">
         <SvgDingDingIcon />
       </VbenIconButton>
       <VbenIconButton class="mb-3" @click="handleThirdLogin(0)">
@@ -49,7 +47,7 @@ function handleThirdLogin(type: number) {
       </VbenIconButton>
       <VbenIconButton class="mb-3" @click="handleThirdLogin(0)">
         <SvgGithubIcon />
-      </VbenIconButton>
+      </VbenIconButton> -->
     </div>
   </div>
 </template>

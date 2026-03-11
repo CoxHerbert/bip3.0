@@ -25,11 +25,11 @@ import { ACTION_ICON, TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 import { BusinessDetailsList } from '#/views/crm/business/components';
 import { ContactDetailsList } from '#/views/crm/contact/components';
-import { ContractDetailsList } from '#/views/crm/contract/components';
+// import { ContractDetailsList } from '#/views/crm/contract/components';
 import { FollowUp } from '#/views/crm/followup';
 import { PermissionList, TransferForm } from '#/views/crm/permission';
-import { ReceivableDetailsList } from '#/views/crm/receivable/components';
-import { ReceivablePlanDetailsList } from '#/views/crm/receivable/plan/components';
+// import { ReceivableDetailsList } from '#/views/crm/receivable/components';
+// import { ReceivablePlanDetailsList } from '#/views/crm/receivable/plan/components';
 
 import Form from '../modules/form.vue';
 import { useDetailSchema } from './data';
@@ -262,11 +262,11 @@ onMounted(() => {
     </Card>
     <Card class="mt-4 min-h-[60%]">
       <Tabs>
-        <Tabs.TabPane tab="跟进记录" key="1" :force-render="true">
-          <FollowUp :biz-id="customerId" :biz-type="BizTypeEnum.CRM_CUSTOMER" />
-        </Tabs.TabPane>
         <Tabs.TabPane tab="基本信息" key="2" :force-render="true">
           <Info :customer="customer" />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="跟进记录" key="1" :force-render="true">
+          <FollowUp :biz-id="customerId" :biz-type="BizTypeEnum.CRM_CUSTOMER" />
         </Tabs.TabPane>
         <Tabs.TabPane tab="联系人" key="3" :force-render="true">
           <ContactDetailsList
@@ -275,7 +275,7 @@ onMounted(() => {
             :customer-id="customerId"
           />
         </Tabs.TabPane>
-        <Tabs.TabPane tab="团队成员" key="4" :force-render="true">
+        <!-- <Tabs.TabPane tab="团队成员" key="4" :force-render="true">
           <PermissionList
             ref="permissionListRef"
             :biz-id="customerId"
@@ -283,7 +283,7 @@ onMounted(() => {
             :show-action="true"
             @quit-team="handleBack"
           />
-        </Tabs.TabPane>
+        </Tabs.TabPane> -->
         <Tabs.TabPane tab="商机" key="5" :force-render="true">
           <BusinessDetailsList
             :biz-id="customerId"
@@ -291,16 +291,16 @@ onMounted(() => {
             :customer-id="customerId"
           />
         </Tabs.TabPane>
-        <Tabs.TabPane tab="合同" key="6" :force-render="true">
+        <!-- <Tabs.TabPane tab="合同" key="6" :force-render="true">
           <ContractDetailsList
             :biz-id="customerId"
             :biz-type="BizTypeEnum.CRM_CUSTOMER"
           />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="回款" key="7" :force-render="true">
+        </Tabs.TabPane> -->
+        <!-- <Tabs.TabPane tab="回款" key="7" :force-render="true">
           <ReceivablePlanDetailsList :customer-id="customerId" />
           <ReceivableDetailsList :customer-id="customerId" />
-        </Tabs.TabPane>
+        </Tabs.TabPane> -->
         <Tabs.TabPane tab="操作日志" key="8" :force-render="true">
           <OperateLog :log-list="logList" />
         </Tabs.TabPane>

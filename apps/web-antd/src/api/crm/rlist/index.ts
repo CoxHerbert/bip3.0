@@ -14,6 +14,7 @@ export namespace CrmRListApi {
   export interface RList {
     id?: number;
     creator?: string;
+    createName?: string;
     updater?: string;
     createTime?: Date;
     updateTime?: Date;

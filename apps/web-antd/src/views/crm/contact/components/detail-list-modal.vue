@@ -11,7 +11,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { Button, message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getContactPageByCustomer } from '#/api/crm/contact';
+import { getContactPage } from '#/api/crm/contact';
 import { $t } from '#/locales';
 
 import Form from '../modules/form.vue';
@@ -91,10 +91,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await getContactPageByCustomer({
+          return await getContactPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            customerId: props.customerId,
+            // customerId: props.customerId,
             ...formValues,
           });
         },

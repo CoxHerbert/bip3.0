@@ -123,8 +123,16 @@ const CRM_DICT = {
   CRM_PRODUCT_STATUS: 'crm_product_status', // CRM 商品状态
   CRM_PRODUCT_UNIT: 'crm_product_unit', // CRM 产品单位
   CRM_RECEIVABLE_RETURN_TYPE: 'crm_receivable_return_type', // CRM 回款的还款方式
-  CRM_RLIST_DEVICE: 'crm_rlist_device', // CRM 需求单设备类型
-  CRM_RLIST_DEVICE_TYPE: 'crm_rlist_device_type', // CRM 需求单设备种类
+  CRM_OPPS_STATUS: 'DC_CRM_OPPS_STATUS', // CRM 商机状态
+  CRM_OPPS_LEVEL: 'DC_CRM_OPPS_LEVEL', // CRM 商机级别
+  CRM_OPPS_FROM: 'DC_CRM_OPPS_FROM', // CRM 商机来源
+  CRM_PMS_PROJECT_INDUSTRY: 'CRM_PMS_PROJECT_INDUSTRY', // CRM 项目所属行业
+  CRM_CUSTOMER_USERSCALE: 'CRM_CUSTOMER_USERSCALE', // CRM 客户人员规模
+  CRM_ROLE_TYPE: 'CRM_ROLE_TYPE', // CRM 角色类型
+  CRM_OPPS_ORGANIZATION: 'CRM_OPPS_ORGANIZATION', // CRM 商机组织
+  CRM_OPPS_DEPARTMENT: 'CRM_OPPS_DEPARTMENT', // CRM 商机部门
+  CRM_RLIST_DEVICE: 'CRM_RLIST_DEVICE', // CRM 需求单设备类型
+  CRM_RLIST_DEVICE_TYPE: 'CRM_RLIST_DEVICE_TYPE', // CRM 需求单设备种类
 } as const;
 
 /** ========== ERP - 企业资源计划模块 ========== */

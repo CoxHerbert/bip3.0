@@ -10,7 +10,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import { Card, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -209,9 +209,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
     <div class="flex h-full w-full">
       <!-- 左侧部门树 -->
-      <Card class="mr-4 h-full w-1/6">
+      <div
+        class="mr-4 h-full w-1/6 overflow-hidden rounded-md border border-border bg-card"
+      >
         <DeptTree @select="handleDeptSelect" />
-      </Card>
+      </div>
       <!-- 右侧用户列表 -->
       <div class="w-5/6">
         <Grid table-title="用户列表">

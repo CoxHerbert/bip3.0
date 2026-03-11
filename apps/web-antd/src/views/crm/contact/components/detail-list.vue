@@ -33,7 +33,7 @@ const props = defineProps<{
 
 const { push } = useRouter();
 
-const [FormModal, formModalApi] = useVbenModal({
+const [FormModal] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
 });
@@ -54,11 +54,11 @@ function handleRefresh() {
 }
 
 /** 创建联系人 */
-function handleCreate() {
-  formModalApi
-    .setData({ customerId: props.customerId, businessId: props.businessId })
-    .open();
-}
+// function handleCreate() {
+//   formModalApi
+//     .setData({ customerId: props.customerId, businessId: props.businessId })
+//     .open();
+// }
 
 /** 关联联系人 */
 function handleCreateContact() {
@@ -170,16 +170,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <template #toolbar-tools>
         <TableAction
           :actions="[
+            // {
+            //   label: $t('ui.actionTitle.create', ['联系人']),
+            //   type: 'primary',
+            //   icon: ACTION_ICON.ADD,
+            //   onClick: handleCreate,
+            // },
             {
-              label: $t('ui.actionTitle.create', ['联系人']),
+              label: '关联客户干系人',
+              icon: ACTION_ICON.ADD,
               type: 'primary',
-              icon: ACTION_ICON.ADD,
-              onClick: handleCreate,
-            },
-            {
-              label: '关联',
-              icon: ACTION_ICON.ADD,
-              type: 'default',
               auth: ['crm:contact:create-business'],
               ifShow: () => !!businessId,
               onClick: handleCreateContact,

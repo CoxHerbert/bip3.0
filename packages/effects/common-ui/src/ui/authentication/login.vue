@@ -6,7 +6,7 @@ import type { VbenFormSchema } from '@vben-core/form-ui';
 import type { AuthenticationProps } from './types';
 
 import { computed, onMounted, reactive, ref } from 'vue';
-// import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 import { $t } from '@vben/locales';
 
@@ -14,6 +14,8 @@ import { useVbenForm } from '@vben-core/form-ui';
 import { VbenButton, VbenCheckbox } from '@vben-core/shadcn-ui';
 
 import Title from './auth-title.vue';
+import DocLink from './doc-link.vue';
+import ThirdPartyLogin from './third-party-login.vue';
 
 interface Props extends AuthenticationProps {
   formSchema?: VbenFormSchema[];
@@ -30,12 +32,13 @@ const props = withDefaults(defineProps<Props>(), {
   loading: false,
   qrCodeLoginPath: '/auth/qrcode-login',
   registerPath: '/auth/register',
-  showCodeLogin: true,
-  showForgetPassword: true,
-  showQrcodeLogin: true,
-  showRegister: true,
-  showRememberMe: true,
-  showThirdPartyLogin: true,
+  showCodeLogin: true, // 显示/隐藏验证码登录
+  showForgetPassword: true, // 显示/隐藏忘记密码
+  showQrcodeLogin: true, // 显示/隐藏二维码登录
+  showRegister: true, // 显示/隐藏注册按钮
+  showRememberMe: true, // 显示/隐藏记住密码
+  showThirdPartyLogin: true, // 显示/隐藏第三方登录
+  showDocLink: false, // 显示/隐藏文档链接
   submitButtonText: '',
   subTitle: '',
   title: '',
@@ -56,7 +59,7 @@ const [Form, formApi] = useVbenForm(
     showDefaultActions: false,
   }),
 );
-// const router = useRouter();
+const router = useRouter();
 
 const REMEMBER_ME_KEY = `REMEMBER_ME_USERNAME_${location.hostname}`;
 
@@ -76,18 +79,18 @@ async function handleSubmit() {
   }
 }
 
-// function handleGo(path: string) {
-//   router.push(path);
-// }
+function handleGo(path: string) {
+  router.push(path);
+}
 
 /**
  * 处理第三方登录
  *
  * @param type 第三方平台类型
  */
-// function handleThirdLogin(type: number) {
-//   emit('thirdLogin', type);
-// }
+function handleThirdLogin(type: number) {
+  emit('thirdLogin', type);
+}
 
 onMounted(() => {
   if (localUsername) {
@@ -133,13 +136,13 @@ defineExpose({
         </VbenCheckbox>
       </div>
 
-      <!-- <span
+      <span
         v-if="showForgetPassword"
         class="vben-link text-sm font-normal"
         @click="handleGo(forgetPasswordPath)"
       >
         {{ $t('authentication.forgetPassword') }}
-      </span> -->
+      </span>
     </div>
     <VbenButton
       :class="{
@@ -153,7 +156,7 @@ defineExpose({
       {{ submitButtonText || $t('common.login') }}
     </VbenButton>
 
-    <!-- <div
+    <div
       v-if="showCodeLogin || showQrcodeLogin"
       class="mb-2 mt-4 flex items-center justify-between"
     >
@@ -165,18 +168,19 @@ defineExpose({
       >
         {{ $t('authentication.mobileLogin') }}
       </VbenButton>
+
       <VbenButton
         v-if="showQrcodeLogin"
         class="ml-4 w-1/2"
         variant="outline"
-        @click="handleGo(qrCodeLoginPath)"
+        @click="handleThirdLogin(30)"
       >
         {{ $t('authentication.qrcodeLogin') }}
       </VbenButton>
-    </div> -->
+    </div>
 
     <!-- 第三方登录 -->
-    <!-- <slot name="third-party-login">
+    <slot name="third-party-login">
       <ThirdPartyLogin
         v-if="showThirdPartyLogin"
         @third-login="handleThirdLogin"
@@ -193,9 +197,12 @@ defineExpose({
           {{ $t('authentication.createAccount') }}
         </span>
       </div>
-    </slot> -->
+    </slot>
 
     <!-- 萌新必读 -->
-    <!-- <DocLink /> -->
+
+    <div v-if="showDocLink">
+      <DocLink />
+    </div>
   </div>
 </template>

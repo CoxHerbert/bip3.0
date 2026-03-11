@@ -50,6 +50,12 @@ export const SystemUserSocialTypeEnum = {
     source: 'dingtalk',
     img: 'https://s1.ax1x.com/2022/05/22/OzMDRs.png',
   },
+  // WECHAT: {
+  //   title: '微信',
+  //   type: 25,
+  //   source: 'wechat',
+  //   img: 'https://s1.ax1x.com/2022/05/22/OzMrzn.png',
+  // },
   WECHAT_ENTERPRISE: {
     title: '企业微信',
     type: 30,

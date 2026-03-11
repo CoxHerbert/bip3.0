@@ -1,8 +1,11 @@
 <script lang="ts" setup>
+import type { CrmRListApi } from '#/api/crm/rlist';
+
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
 import { formatDateTime } from '@vben/utils';
 
 import {
@@ -16,18 +19,11 @@ import {
 } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction } from '#/adapter/vxe-table';
+import { deleteRList, getRList, updateRList } from '#/api/crm/rlist';
 import { deleteRListFile, deleteRListFileList } from '#/api/crm/rlist-file';
-import {
-  deleteRList,
-  getRList,
-  updateRList,
-  type CrmRListApi,
-} from '#/api/crm/rlist';
 import { DictTag } from '#/components/dict-tag';
 import FileUpload from '#/components/upload/file-upload.vue';
 import { $t } from '#/locales';
-
-import { DICT_TYPE } from '@vben/constants';
 
 import RListForm from '../modules/rlist-form.vue';
 
@@ -51,7 +47,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 function handleSelectChange(keys: (number | string)[]) {
-  selectedRowKeys.value = keys.map((item) => Number(item));
+  selectedRowKeys.value = keys.map(Number);
 }
 
 const columns = [
@@ -63,7 +59,7 @@ const headerItems = computed(() => [
   { label: 'BD', value: detail.value.bdName || '--' },
   { label: '关联商机', value: detail.value.oppsName || '--' },
   { label: '关联客户', value: detail.value.customerName || '--' },
-  { label: '创建人', value: detail.value.creator || '--' },
+  { label: '创建人', value: detail.value.createName || '--' },
   {
     label: '创建时间',
     value: detail.value.createTime
@@ -84,7 +80,7 @@ async function loadDetail() {
 }
 
 function handleBack() {
-  push({ name: 'CrmRList' });
+  push({ name: '客户需求单' });
 }
 
 function handleCreate() {
@@ -119,7 +115,7 @@ async function handleDeleteFile(record: CrmRListApi.RListFile) {
 }
 
 async function handleDeleteSelected() {
-  if (!selectedRowKeys.value.length) {
+  if (selectedRowKeys.value.length === 0) {
     message.warning('请先选择附件');
     return;
   }
@@ -130,7 +126,7 @@ async function handleDeleteSelected() {
 
 async function handleUploadChange(value: string | string[]) {
   const urls = Array.isArray(value) ? value : value ? [value] : [];
-  if (!urls.length) {
+  if (urls.length === 0) {
     return;
   }
 
@@ -138,7 +134,7 @@ async function handleUploadChange(value: string | string[]) {
     (detail.value.filesList || []).map((item) => item.rlistFileUrl),
   );
   const newUrls = urls.filter((url) => !exists.has(url));
-  if (!newUrls.length) {
+  if (newUrls.length === 0) {
     uploadValues.value = [];
     return;
   }
@@ -206,6 +202,9 @@ onMounted(() => {
     </template>
 
     <Card>
+      <div class="text-3xl font-bold">
+        {{ detail.rlistName || '需求单详情' }}
+      </div>
       <div class="mt-2 flex flex-wrap gap-x-8 gap-y-2 text-sm text-gray-600">
         <div v-for="item in headerItems" :key="item.label">
           <span class="text-gray-500">{{ item.label }}：</span>{{ item.value }}
@@ -249,6 +248,7 @@ onMounted(() => {
             <FileUpload
               v-model="uploadValues"
               :max-number="1"
+              :multiple="true"
               class="w-72"
               @change="handleUploadChange"
             />

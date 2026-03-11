@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { CrmBusinessApi } from '#/api/crm/business';
 import type { CrmRListApi } from '#/api/crm/rlist';
 
 import { computed, ref } from 'vue';
@@ -8,7 +9,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { getSimpleBusinessList, type CrmBusinessApi } from '#/api/crm/business';
+import { getSimpleBusinessList } from '#/api/crm/business';
 import { createRList, getRList, updateRList } from '#/api/crm/rlist';
 import { $t } from '#/locales';
 

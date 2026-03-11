@@ -52,30 +52,32 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
+  <div class="flex h-full flex-col p-3">
     <Input
       placeholder="搜索部门"
       allow-clear
       v-model:value="searchValue"
       @change="handleSearch"
-      class="w-full"
+      class="w-full flex-shrink-0"
     >
       <template #prefix>
         <IconifyIcon icon="lucide:search" class="size-4" />
       </template>
     </Input>
-    <Spin :spinning="loading" wrapper-class-name="w-full">
-      <Tree
-        @select="handleSelect"
-        v-if="deptTree.length > 0"
-        class="pt-2"
-        :tree-data="deptTree"
-        :default-expand-all="true"
-        :field-names="{ title: 'name', key: 'id', children: 'children' }"
-      />
-      <div v-else-if="!loading" class="py-4 text-center text-gray-500">
-        暂无数据
-      </div>
-    </Spin>
+
+    <div class="mt-2 flex-1 overflow-auto">
+      <Spin :spinning="loading" class="w-full">
+        <Tree
+          @select="handleSelect"
+          v-if="deptTree.length > 0"
+          :tree-data="deptTree"
+          :default-expand-all="true"
+          :field-names="{ title: 'name', key: 'id', children: 'children' }"
+        />
+        <div v-else-if="!loading" class="py-4 text-center text-gray-500">
+          暂无数据
+        </div>
+      </Spin>
+    </div>
   </div>
 </template>

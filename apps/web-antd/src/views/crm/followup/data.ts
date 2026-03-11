@@ -6,16 +6,19 @@ import type { DescriptionItemSchema } from '#/components/description';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
+import { useUserStore } from '@vben/stores';
 import { formatDateTime } from '@vben/utils';
 
 import { getBusinessPageByCustomer } from '#/api/crm/business';
 import { getContactPageByCustomer } from '#/api/crm/contact';
 import { BizTypeEnum } from '#/api/crm/permission';
+import { getSimpleUserList } from '#/api/system/user';
 
 /** 新增/修改的表单 */
 export function useFormSchema(
   bizId: Ref<number | undefined>,
 ): VbenFormSchema[] {
+  const userStore = useUserStore();
   return [
     {
       component: 'Input',
@@ -31,6 +34,26 @@ export function useFormSchema(
       dependencies: {
         triggerFields: [''],
         show: () => false,
+      },
+    },
+    {
+      fieldName: 'followUpUserId',
+      label: '跟进人',
+      component: 'ApiSelect',
+      componentProps: {
+        api: getSimpleUserList,
+        labelField: 'nickname',
+        valueField: 'id',
+        allowClear: true,
+        // 2. Ant Design Select 属性（透传生效）
+        showSearch: true, // 启用搜索
+        optionFilterProp: 'label', // 搜索字段
+        placeholder: '请选择BD负责人',
+      },
+      defaultValue: userStore.userInfo?.id,
+      dependencies: {
+        triggerFields: ['bizType'], // 监听业务类型
+        show: (values) => values.bizType === BizTypeEnum.CRM_BUSINESS, // 只有客户管理显示
       },
     },
     {
@@ -64,6 +87,10 @@ export function useFormSchema(
       fieldName: 'picUrls',
       label: '图片',
       component: 'ImageUpload',
+      dependencies: {
+        triggerFields: ['bizType'], // 监听业务类型
+        show: (values) => values.bizType === BizTypeEnum.CRM_CUSTOMER, // 只有客户管理显示
+      },
     },
     {
       fieldName: 'fileUrls',
@@ -90,6 +117,10 @@ export function useFormSchema(
         valueField: 'id',
         mode: 'multiple',
       },
+      dependencies: {
+        triggerFields: ['bizType'], // 监听业务类型
+        show: (values) => values.bizType === BizTypeEnum.CRM_CUSTOMER, // 只有客户管理显示
+      },
     },
     {
       fieldName: 'businessIds',
@@ -110,6 +141,10 @@ export function useFormSchema(
         labelField: 'name',
         valueField: 'id',
         mode: 'multiple',
+      },
+      dependencies: {
+        triggerFields: ['bizType'], // 监听业务类型
+        show: (values) => values.bizType === BizTypeEnum.CRM_CUSTOMER, // 只有客户管理显示
       },
     },
   ];
@@ -164,31 +199,45 @@ export function useGridColumns(
 export function useFollowUpDetailSchema(): DescriptionItemSchema[] {
   return [
     {
-      field: 'ownerUserName',
+      field: 'creatorName',
       label: '负责人',
     },
     {
-      field: 'contactLastContent',
-      label: '最后跟进记录',
+      field: 'content',
+      label: '最近跟进内容',
     },
     {
-      field: 'contactLastTime',
+      field: 'followUpRecordDOS', // ✅ 获取整个数组
       label: '最后跟进时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => {
+        if (!val || !Array.isArray(val) || val.length === 0) {
+          return '--';
+        }
+        const lastRecord = val[val.length - 1];
+        return formatDateTime(lastRecord?.nextTime) as string;
+      },
     },
     {
-      field: 'creatorName',
-      label: '创建人',
-    },
-    {
-      field: 'createTime',
+      field: 'followUpRecordDOS', // ✅ 获取整个数组
       label: '创建时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => {
+        if (!val || !Array.isArray(val) || val.length === 0) {
+          return '--';
+        }
+        const lastRecord = val[val.length - 1];
+        return formatDateTime(lastRecord?.createTime) as string;
+      },
     },
     {
-      field: 'updateTime',
+      field: 'followUpRecordDOS', // ✅ 获取整个数组
       label: '更新时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => {
+        if (!val || !Array.isArray(val) || val.length === 0) {
+          return '--';
+        }
+        const lastRecord = val[val.length - 1];
+        return formatDateTime(lastRecord?.updateTime) as string;
+      },
     },
   ];
 }

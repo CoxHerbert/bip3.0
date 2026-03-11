@@ -4,7 +4,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import { getSimpleBusinessList } from '#/api/crm/business';
+import { getSimpleBusinessOppList } from '#/api/crm/businessopp';
 import { getCustomerSimpleList } from '#/api/crm/customer';
 import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
@@ -34,21 +34,9 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '需求单编号',
       component: 'Input',
       componentProps: {
-        placeholder: '可不填，后端自动生成',
+        placeholder: '系统自动生成',
+        disabled: true,
       },
-    },
-    {
-      fieldName: 'oppsId',
-      label: '关联商机',
-      component: 'ApiSelect',
-      componentProps: {
-        api: getSimpleBusinessList,
-        labelField: 'name',
-        valueField: 'id',
-        placeholder: '请选择关联商机',
-        showSearch: true,
-      },
-      rules: 'required',
     },
     {
       fieldName: 'customerId',
@@ -60,6 +48,21 @@ export function useFormSchema(): VbenFormSchema[] {
         valueField: 'id',
         placeholder: '关联商机自动带出，可手动调整',
         showSearch: true,
+        optionFilterProp: 'label',
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'oppsId',
+      label: '关联商机',
+      component: 'ApiSelect',
+      componentProps: {
+        api: getSimpleBusinessOppList,
+        labelField: 'oppsName',
+        valueField: 'id',
+        placeholder: '请选择关联商机',
+        showSearch: true,
+        optionFilterProp: 'label',
       },
       rules: 'required',
     },
@@ -73,6 +76,7 @@ export function useFormSchema(): VbenFormSchema[] {
         valueField: 'id',
         placeholder: '请选择 BD',
         showSearch: true,
+        optionFilterProp: 'label',
       },
       rules: 'required',
     },
@@ -102,6 +106,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'FileUpload',
       componentProps: {
         maxNumber: 9,
+        multiple: true,
       },
       formItemClass: 'col-span-2',
     },
@@ -132,6 +137,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         placeholder: '请选择关联客户',
         allowClear: true,
         showSearch: true,
+        optionFilterProp: 'label',
       },
     },
     {
@@ -178,7 +184,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     { field: 'rlistCode', title: '需求单编号', minWidth: 150 },
     { field: 'customerName', title: '关联客户', minWidth: 180 },
     { field: 'oppsName', title: '关联商机', minWidth: 180 },
-    { field: 'creator', title: '创建人', minWidth: 120 },
+    { field: 'createName', title: '创建人', minWidth: 120 },
     { field: 'bdName', title: 'BD', minWidth: 120 },
     {
       field: 'deviceTypeKey',
