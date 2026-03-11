@@ -4,6 +4,7 @@ import type { CrmFollowUpApi } from '#/api/crm/followup';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+// import { useUserStore } from '@vben/stores';
 
 import { message } from 'ant-design-vue';
 
@@ -65,8 +66,11 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      // 设置到 values
-      await formApi.setValues(data);
+      // 设置到 values，如果没有跟进人则使用当前用户
+      const formData = {
+        ...data,
+      };
+      await formApi.setValues(formData);
     } finally {
       modalApi.unlock();
     }

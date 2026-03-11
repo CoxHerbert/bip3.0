@@ -151,7 +151,7 @@ async function handleQuit() {
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useGridColumns(),
-    height: 'auto',
+    height: 500,
     pagerConfig: {
       enabled: false,
     },

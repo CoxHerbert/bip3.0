@@ -36,6 +36,8 @@ export namespace CrmCustomerApi {
     createTime: Date; // 创建时间
     updateTime: Date; // 更新时间
     poolDay?: number; // 距离进入公海天数
+    userScale: number; // 客户人员规模
+    isCMFactory: boolean; // 是否为CM厂商
   }
 
   /** 客户导入请求 */

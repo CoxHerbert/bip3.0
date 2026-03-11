@@ -86,7 +86,12 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
       config.headers['visit-tenant-id'] = tenantEnable
         ? accessStore.visitTenantId
         : undefined;
-
+      // 本地开发 tag 路由：只在开发模式下注入，生产不影响
+      const devTag = import.meta.env.VITE_DEV_TAG;
+      // console.log('devTag', devTag);
+      if (devTag) {
+        config.headers.tag = devTag;
+      }
       // 是否 API 加密
       if ((config.headers || {}).isEncrypt) {
         try {

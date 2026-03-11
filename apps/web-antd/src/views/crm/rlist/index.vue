@@ -1,20 +1,26 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { CrmMyContactApi } from '#/api/crm/my-contact';
+import type { CrmRListApi } from '#/api/crm/rlist';
+
+import { useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { Button, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteMyContact, getMyContactPage } from '#/api/crm/my-contact';
+import { deleteRList, getRListPage } from '#/api/crm/rlist';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import Form from './modules/form.vue';
+import RListForm from './modules/rlist-form.vue';
+
+defineOptions({ name: 'CrmRList' });
+
+const { push } = useRouter();
 
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: Form,
+  connectedComponent: RListForm,
   destroyOnClose: true,
 });
 
@@ -23,21 +29,25 @@ function handleRefresh() {
 }
 
 function handleCreate() {
-  formModalApi.setData(null).open();
+  formModalApi.setData({}).open();
 }
 
-function handleEdit(row: CrmMyContactApi.Contact) {
-  formModalApi.setData(row).open();
+function handleEdit(row: CrmRListApi.RList) {
+  formModalApi.setData({ id: row.id }).open();
 }
 
-async function handleDelete(row: CrmMyContactApi.Contact) {
+function handleDetail(row: CrmRListApi.RList) {
+  push({ name: 'CrmRListDetail', params: { id: row.id } });
+}
+
+async function handleDelete(row: CrmRListApi.RList) {
   const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.contactsName]),
+    content: `正在删除需求单：${row.rlistName}`,
     duration: 0,
   });
   try {
-    await deleteMyContact(row.id!);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.contactsName]));
+    await deleteRList(row.id as number);
+    message.success($t('ui.actionMessage.deleteSuccess', [row.rlistName]));
     handleRefresh();
   } finally {
     hideLoading();
@@ -55,7 +65,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await getMyContactPage({
+          return await getRListPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
@@ -71,32 +81,33 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<CrmMyContactApi.Contact>,
+  } as VxeTableGridOptions<CrmRListApi.RList>,
 });
 </script>
 
 <template>
   <Page auto-content-height>
     <FormModal @success="handleRefresh" />
-    <Grid>
+    <Grid table-title="需求单列表">
       <template #toolbar-tools>
         <TableAction
           :actions="[
             {
-              label: $t('ui.actionTitle.create', ['我的客户联系人']),
+              label: $t('ui.actionTitle.create', ['需求单']),
               type: 'primary',
               icon: ACTION_ICON.ADD,
-              auth: ['crm:my-contact:create'],
               onClick: handleCreate,
             },
           ]"
         />
       </template>
-      <template #contactsName="{ row }">
-        <Button type="link" @click="handleEdit(row)">
-          {{ row.contactsName }}
-        </Button>
+
+      <template #rlistName="{ row }">
+        <a class="text-primary hover:underline" @click="handleDetail(row)">
+          {{ row.rlistName }}
+        </a>
       </template>
+
       <template #actions="{ row }">
         <TableAction
           :actions="[
@@ -104,7 +115,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: $t('common.edit'),
               type: 'link',
               icon: ACTION_ICON.EDIT,
-              auth: ['crm:my-contact:update'],
               onClick: handleEdit.bind(null, row),
             },
             {
@@ -112,9 +122,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               danger: true,
               icon: ACTION_ICON.DELETE,
-              auth: ['crm:my-contact:delete'],
               popConfirm: {
-                title: $t('ui.actionMessage.deleteConfirm', [row.contactsName]),
+                title: `确认删除需求单【${row.rlistName}】吗？`,
                 confirm: handleDelete.bind(null, row),
               },
             },

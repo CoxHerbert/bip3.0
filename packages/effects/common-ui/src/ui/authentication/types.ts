@@ -51,6 +51,10 @@ interface AuthenticationProps {
    * @zh_CN 是否显示第三方登录
    */
   showThirdPartyLogin?: boolean;
+  /**
+   * @zh_CN 是否显示文档链接
+   */
+  showDocLink?: boolean;
 
   /**
    * @zh_CN 登录框子标题

@@ -13,7 +13,7 @@ defineProps<{
 }>();
 
 const [BaseDescriptions] = useDescription({
-  title: '基本信息',
+  // title: '基本信息',
   bordered: false,
   column: 4,
   class: 'mx-4',
@@ -21,7 +21,7 @@ const [BaseDescriptions] = useDescription({
 });
 
 const [SystemDescriptions] = useDescription({
-  title: '系统信息',
+  // title: '系统信息',
   bordered: false,
   column: 3,
   class: 'mx-4',
@@ -31,8 +31,16 @@ const [SystemDescriptions] = useDescription({
 
 <template>
   <div>
+    <!-- 基本信息 -->
+    <div class="mb-4 flex items-center gap-2 border-l-4 border-primary pl-3">
+      <span class="font-medium text-foreground">基本信息</span>
+    </div>
     <BaseDescriptions :data="customer" />
     <Divider />
+    <!-- 系统信息 -->
+    <div class="mb-4 flex items-center gap-2 border-l-4 border-primary pl-3">
+      <span class="font-medium text-foreground">系统信息</span>
+    </div>
     <SystemDescriptions :data="customer" />
   </div>
 </template>

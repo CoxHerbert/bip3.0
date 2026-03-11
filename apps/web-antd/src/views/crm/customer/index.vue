@@ -19,12 +19,13 @@ import {
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import CustomerTree from './modules/customer-tree.vue';
 import Form from './modules/form.vue';
 import ImportForm from './modules/import-form.vue';
 
 const { push } = useRouter();
 const sceneType = ref('1');
-
+const selectedCategory = ref<string>('all');
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
@@ -37,6 +38,12 @@ const [ImportModal, importModalApi] = useVbenModal({
 
 /** 刷新表格 */
 function handleRefresh() {
+  gridApi.query();
+}
+
+/** 处理分类选择 */
+function handleSelectCategory(key: string) {
+  selectedCategory.value = key;
   gridApi.query();
 }
 
@@ -138,70 +145,81 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
     <FormModal @success="handleRefresh" />
     <ImportModal @success="handleRefresh" />
-    <Grid>
-      <template #toolbar-actions>
-        <Tabs class="w-full" @change="handleChangeSceneType">
-          <Tabs.TabPane tab="我负责的" key="1" />
-          <Tabs.TabPane tab="我参与的" key="2" />
-          <Tabs.TabPane tab="下属负责的" key="3" />
-        </Tabs>
-      </template>
-      <template #toolbar-tools>
-        <TableAction
-          :actions="[
-            {
-              label: $t('ui.actionTitle.create', ['客户']),
-              type: 'primary',
-              icon: ACTION_ICON.ADD,
-              auth: ['crm:customer:create'],
-              onClick: handleCreate,
-            },
-            {
-              label: $t('ui.actionTitle.import'),
-              type: 'primary',
-              icon: ACTION_ICON.UPLOAD,
-              auth: ['crm:customer:import'],
-              onClick: handleImport,
-            },
-            {
-              label: $t('ui.actionTitle.export'),
-              type: 'primary',
-              icon: ACTION_ICON.DOWNLOAD,
-              auth: ['crm:customer:export'],
-              onClick: handleExport,
-            },
-          ]"
+    <div class="flex h-full gap-4">
+      <!-- 左侧分类树 -->
+      <div class="w-62 flex-shrink-0">
+        <CustomerTree
+          :selected-key="selectedCategory"
+          @select="handleSelectCategory"
         />
-      </template>
-      <template #name="{ row }">
-        <Button type="link" @click="handleDetail(row)">
-          {{ row.name }}
-        </Button>
-      </template>
-      <template #actions="{ row }">
-        <TableAction
-          :actions="[
-            {
-              label: $t('common.edit'),
-              type: 'link',
-              icon: ACTION_ICON.EDIT,
-              auth: ['crm:customer:update'],
-              onClick: handleEdit.bind(null, row),
-            },
-            {
-              label: $t('common.delete'),
-              type: 'link',
-              danger: true,
-              icon: ACTION_ICON.DELETE,
-              auth: ['crm:customer:delete'],
-              popConfirm: {
-                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
-                confirm: handleDelete.bind(null, row),
-              },
-            },
-          ]"
-        />
-      </template>
-    </Grid>
+      </div>
+      <div class="flex-1 overflow-hidden">
+        <Grid>
+          <template #toolbar-actions>
+            <Tabs class="w-full" @change="handleChangeSceneType">
+              <Tabs.TabPane tab="我负责的" key="1" />
+              <Tabs.TabPane tab="我参与的" key="2" />
+              <Tabs.TabPane tab="下属负责的" key="3" />
+            </Tabs>
+          </template>
+          <template #toolbar-tools>
+            <TableAction
+              :actions="[
+                {
+                  label: $t('ui.actionTitle.create', ['客户']),
+                  type: 'primary',
+                  icon: ACTION_ICON.ADD,
+                  auth: ['crm:customer:create'],
+                  onClick: handleCreate,
+                },
+                {
+                  label: $t('ui.actionTitle.import'),
+                  type: 'primary',
+                  icon: ACTION_ICON.UPLOAD,
+                  auth: ['crm:customer:import'],
+                  onClick: handleImport,
+                },
+                {
+                  label: $t('ui.actionTitle.export'),
+                  type: 'primary',
+                  icon: ACTION_ICON.DOWNLOAD,
+                  auth: ['crm:customer:export'],
+                  onClick: handleExport,
+                },
+              ]"
+            />
+          </template>
+          <template #name="{ row }">
+            <Button type="link" @click="handleDetail(row)">
+              {{ row.name }}
+            </Button>
+          </template>
+          <template #actions="{ row }">
+            <TableAction
+              :actions="[
+                {
+                  label: $t('common.edit'),
+                  type: 'link',
+                  icon: ACTION_ICON.EDIT,
+                  auth: ['crm:customer:update'],
+                  onClick: handleEdit.bind(null, row),
+                },
+                {
+                  label: $t('common.delete'),
+                  type: 'link',
+                  danger: true,
+                  icon: ACTION_ICON.DELETE,
+                  auth: ['crm:customer:delete'],
+                  popConfirm: {
+                    title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                    confirm: handleDelete.bind(null, row),
+                  },
+                },
+              ]"
+            />
+          </template>
+        </Grid>
+      </div>
+    </div>
   </Page>
 </template>

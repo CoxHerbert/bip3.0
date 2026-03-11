@@ -126,3 +126,10 @@ export function getBusinessPageByContact(params: PageParam) {
 export function transferBusiness(data: CrmPermissionApi.BusinessTransferReqVO) {
   return requestClient.put('/crm/business/transfer', data);
 }
+
+/** 商机转移 */
+export function transferOpportunity(
+  data: CrmPermissionApi.BusinessTransferReqVO,
+) {
+  return requestClient.put('/crm/opps/transfer', data);
+}

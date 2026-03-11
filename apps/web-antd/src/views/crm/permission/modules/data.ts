@@ -26,6 +26,8 @@ export function useTransferFormSchema(): VbenFormSchema[] {
         api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
+        showSearch: true, // 启用搜索
+        optionFilterProp: 'label', // 搜索字段
       },
       rules: 'required',
     },
@@ -68,27 +70,27 @@ export function useTransferFormSchema(): VbenFormSchema[] {
       },
       rules: 'required',
     },
-    {
-      fieldName: 'toBizTypes',
-      label: '同时转移',
-      component: 'CheckboxGroup',
-      componentProps: {
-        options: [
-          {
-            label: '联系人',
-            value: BizTypeEnum.CRM_CONTACT,
-          },
-          {
-            label: '商机',
-            value: BizTypeEnum.CRM_BUSINESS,
-          },
-          {
-            label: '合同',
-            value: BizTypeEnum.CRM_CONTRACT,
-          },
-        ],
-      },
-    },
+    // {
+    //   fieldName: 'toBizTypes',
+    //   label: '同时转移',
+    //   component: 'CheckboxGroup',
+    //   componentProps: {
+    //     options: [
+    //       {
+    //         label: '联系人',
+    //         value: BizTypeEnum.CRM_CONTACT,
+    //       },
+    //       {
+    //         label: '商机',
+    //         value: BizTypeEnum.CRM_BUSINESS,
+    //       },
+    //       // {
+    //       //   label: '合同',
+    //       //   value: BizTypeEnum.CRM_CONTRACT,
+    //       // },
+    //     ],
+    //   },
+    // },
   ];
 }
 
@@ -112,6 +114,20 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
+      fieldName: 'roleId',
+      label: '角色类型',
+      component: 'Select',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.CRM_ROLE_TYPE, 'number'),
+        placeholder: '请选择角色类型',
+      },
+      dependencies: {
+        triggerFields: [''],
+        show: () => true,
+      },
+    },
+
+    {
       fieldName: 'userId',
       label: '选择人员',
       component: 'ApiSelect',
@@ -119,6 +135,8 @@ export function useFormSchema(): VbenFormSchema[] {
         api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
+        showSearch: true,
+        optionFilterProp: 'label', // 搜索字段
       },
       dependencies: {
         triggerFields: ['ids'],
@@ -203,6 +221,14 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       type: 'checkbox',
       width: 50,
+    },
+    {
+      field: 'roleId',
+      title: '角色类型',
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.CRM_ROLE_TYPE },
+      },
     },
     {
       field: 'nickname',

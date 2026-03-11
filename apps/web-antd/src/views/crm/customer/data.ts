@@ -6,7 +6,6 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { useUserStore } from '@vben/stores';
 
-import { getAreaTree } from '#/api/system/area';
 import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
 
@@ -43,8 +42,18 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
+      fieldName: 'userScale',
+      label: '人员规模',
+      component: 'Select',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_USERSCALE, 'number'),
+        placeholder: '请选择客户人员规模',
+        allowClear: true,
+      },
+    },
+    {
       fieldName: 'mobile',
-      label: '手机',
+      label: '客户手机',
       component: 'Input',
       componentProps: {
         placeholder: '请输入手机',
@@ -52,23 +61,18 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'ownerUserId',
-      label: '负责人',
-      component: 'ApiSelect',
-      dependencies: {
-        triggerFields: ['id'],
-        disabled: (values) => values.id,
-      },
+      fieldName: 'isCMFactory',
+      label: '是否为CM厂商',
+      component: 'RadioGroup',
       componentProps: {
-        api: getSimpleUserList,
-        labelField: 'nickname',
-        valueField: 'id',
-        placeholder: '请选择负责人',
-        allowClear: true,
+        options: [
+          { label: '是', value: true },
+          { label: '否', value: false },
+        ],
       },
-      defaultValue: userStore.userInfo?.id,
-      rules: 'required',
+      defaultValue: true,
     },
+
     {
       fieldName: 'telephone',
       label: '电话',
@@ -126,25 +130,43 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'areaId',
-      label: '地址',
-      component: 'ApiTreeSelect',
+      fieldName: 'ownerUserId',
+      label: '负责人',
+      component: 'ApiSelect',
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values) => values.id,
+      },
       componentProps: {
-        api: getAreaTree,
-        fieldNames: { label: 'name', value: 'id', children: 'children' },
-        placeholder: '请选择地址',
+        api: getSimpleUserList,
+        labelField: 'nickname',
+        valueField: 'id',
+        placeholder: '请选择负责人',
         allowClear: true,
       },
+      defaultValue: userStore.userInfo?.id,
+      rules: 'required',
     },
-    {
-      fieldName: 'detailAddress',
-      label: '详细地址',
-      component: 'Input',
-      componentProps: {
-        placeholder: '请输入详细地址',
-        allowClear: true,
-      },
-    },
+    // {
+    //   fieldName: 'areaId',
+    //   label: '地址',
+    //   component: 'ApiTreeSelect',
+    //   componentProps: {
+    //     api: getAreaTree,
+    //     fieldNames: { label: 'name', value: 'id', children: 'children' },
+    //     placeholder: '请选择地址',
+    //     allowClear: true,
+    //   },
+    // },
+    // {
+    //   fieldName: 'detailAddress',
+    //   label: '详细地址',
+    //   component: 'Input',
+    //   componentProps: {
+    //     placeholder: '请输入详细地址',
+    //     allowClear: true,
+    //   },
+    // },
     {
       fieldName: 'contactNextTime',
       label: '下次联系时间',
@@ -274,9 +296,32 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       },
     },
     {
+      field: 'userScale',
+      title: '客户人员规模',
+      minWidth: 100,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.CRM_CUSTOMER_USERSCALE },
+      },
+    },
+    {
       field: 'mobile',
-      title: '手机',
+      title: '客户手机',
       minWidth: 120,
+    },
+    {
+      field: 'isCMFactory',
+      title: '是否为CM厂商',
+      minWidth: 120,
+      cellRender: {
+        name: 'CellTag',
+        props: {
+          options: [
+            { label: '是', value: true, color: 'blue' },
+            { label: '否', value: false, color: 'gray' },
+          ],
+        },
+      },
     },
     {
       field: 'telephone',

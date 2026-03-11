@@ -8,7 +8,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { transferBusiness } from '#/api/crm/business';
+import { transferOpportunity } from '#/api/crm/business';
 import { transferClue } from '#/api/crm/clue';
 import { transferContact } from '#/api/crm/contact';
 import { transferContract } from '#/api/crm/contract';
@@ -68,10 +68,11 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data =
       (await formApi.getValues()) as CrmPermissionApi.BusinessTransferReqVO;
+
     try {
       switch (bizType.value) {
         case BizTypeEnum.CRM_BUSINESS: {
-          return await transferBusiness(data);
+          return await transferOpportunity(data);
         }
         case BizTypeEnum.CRM_CLUE: {
           return await transferClue(data);
@@ -104,12 +105,12 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{ bizType: number }>();
+    const data = modalApi.getData<{ bizId: number; bizType: number }>();
     if (!data || !data.bizType) {
       return;
     }
     bizType.value = data.bizType;
-    await formApi.setFieldValue('id', data.bizType);
+    await formApi.setFieldValue('id', data.bizId);
   },
 });
 </script>

@@ -75,6 +75,15 @@ const routes: RouteRecordRaw[] = [
         component: () => import('#/views/crm/contact/detail/index.vue'),
       },
       {
+        path: 'rlist/detail/:id',
+        name: 'CrmRListDetail',
+        meta: {
+          title: '需求单详情',
+          activePath: '/crm/rlist',
+        },
+        component: () => import('#/views/crm/rlist/detail/index.vue'),
+      },
+      {
         path: 'product/detail/:id',
         name: 'CrmProductDetail',
         meta: {
@@ -83,32 +92,24 @@ const routes: RouteRecordRaw[] = [
         },
         component: () => import('#/views/crm/product/detail/index.vue'),
       },
+      // ai生成3.5号
+      // {
+      //   path: 'crmopps',
+      //   name: 'CrmOpportunity',
+      //   meta: {
+      //     title: '商机管理',
+      //     activePath: '/crm/crmopps',
+      //   },
+      //   component: () => import('#/views/crm/crmopps/index.vue'),
+      // },
       {
-        path: 'my-customer/detail/:id',
-        name: 'CrmMyCustomerDetail',
+        path: 'businessopp/detail/:id',
+        name: 'CrmOpportunityDetail',
         meta: {
-          title: '客户详情',
-          activePath: '/crm/my-customer',
+          title: '商机详情',
+          activePath: '/crm/businessopp',
         },
-        component: () => import('#/views/crm/my-customer/detail.vue'),
-      },
-      {
-        path: 'my-customer/create',
-        name: 'CrmMyCustomerCreate',
-        meta: {
-          title: '新建客户',
-          activePath: '/crm/my-customer',
-        },
-        component: () => import('#/views/crm/my-customer/form.vue'),
-      },
-      {
-        path: 'my-customer/update/:id',
-        name: 'CrmMyCustomerUpdate',
-        meta: {
-          title: '编辑客户',
-          activePath: '/crm/my-customer',
-        },
-        component: () => import('#/views/crm/my-customer/form.vue'),
+        component: () => import('#/views/crm/businessopp/detail/index.vue'),
       },
     ],
   },

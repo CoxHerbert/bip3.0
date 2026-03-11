@@ -15,8 +15,8 @@ You just need to configure the `props` parameter of `AuthPageLayout` in `src/rou
     component: AuthPageLayout,
     props: {
       sloganImage: "xxx/xxx.png",
-      pageTitle: "开箱即用的大型中后台管理系统",
-      pageDescription: "工程化、高性能、跨组件库的前端模版",
+      pageTitle: "联合东创综合管理系统平台",
+      pageDescription: "Business Innovation Platform",
       toolbar: true,
       toolbarList: ['color', 'language', 'layout', 'theme'],
     }
